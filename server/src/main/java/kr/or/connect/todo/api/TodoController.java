@@ -3,9 +3,13 @@ package kr.or.connect.todo.api;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.connect.domain.Todo;
@@ -26,29 +30,18 @@ public class TodoController {
 		return service.findAll();
 	}
 	
-	@GetMapping("/insert/{todo}")
-	Integer insertTodo(@PathVariable  String todo) {
+	@PostMapping
+	Integer insertTodo(@RequestParam("todo") String todo) {
 		return service.insertTodo(todo);
 	}
 	
-	@GetMapping("/completed/{id}")
-	void checkComplete(@PathVariable  Integer id) {
-		service.updateComplete(id);
+	@PutMapping
+	void checkComplete(@RequestParam("id") Integer id,@RequestParam("completed") Integer completed) {
+		service.updateComplete(id,completed);
 	}
 	
-	@GetMapping("/incomplete/{id}")
-	void checkIncomplete(@PathVariable  Integer id) {
-		service.updateIncomplete(id);
-	}
-	
-	@GetMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	void deleteTodo(@PathVariable  Integer id) {
 		service.deleteTodo(id);
 	}
-	
-	@GetMapping("/deleteCompleted")
-	void deleteCompleted() {
-		service.deleteCompleted();
-	}
-	
 }

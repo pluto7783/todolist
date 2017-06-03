@@ -1,7 +1,6 @@
 package kr.or.connect.todo.persistence;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +23,12 @@ public class TodoDao {
 	private SimpleJdbcInsert insertAction;
 	private RowMapper<Todo> rowMapper = BeanPropertyRowMapper.newInstance(Todo.class);
 	
-	
 	public TodoDao(DataSource dataSource) {
 		this.jdbc = new NamedParameterJdbcTemplate(dataSource);
 		this.insertAction = new SimpleJdbcInsert(dataSource)
 				.withTableName("todo")
-				.usingGeneratedKeyColumns("id");
+				.usingGeneratedKeyColumns("id")
+				.usingColumns("todo");
 	}
 	
 	public List<Todo> selectAll() {
@@ -38,31 +37,25 @@ public class TodoDao {
 	}
 	
 	public Integer insertTodo(String todo){
-		Date presentTime = new Date();
 		Map<String, Object> parameters = new HashMap<>();
 	    parameters.put("todo", todo);
-	    parameters.put("completed", 0);
-	    parameters.put("date", presentTime);
 	    return insertAction.executeAndReturnKey(parameters).intValue();
 	}
 	
-	public void updateComplete(Integer id){
-		Map<String, ?> parameters = Collections.singletonMap("id", id);
-		jdbc.update(TodoSqls.CHECK_COMPLETE, parameters);
+	public Integer updateComplete(Integer id, Integer completed){
+		Map<String, Integer> parameters = new HashMap<>();
+		parameters.put("id", id);
+		parameters.put("completed", completed);
+		return jdbc.update(TodoSqls.CHECK_COMPLETE, parameters);
 	}
 	
-	public void updateIncomplete(Integer id){
-		Map<String, ?> parameters = Collections.singletonMap("id", id);
-		jdbc.update(TodoSqls.CHECK_INCOMPLETE, parameters);
-	}
-	
-	public void deleteTodo(Integer id){
-		Map<String, ?> parameters = Collections.singletonMap("id", id);
-		jdbc.update(TodoSqls.DELETE_BY_ID, parameters);
-	}
-	
-	public void deleteCompleted(){
-		Map<String, ?> parameters = Collections.singletonMap("completed", 1);
-		jdbc.update(TodoSqls.DELETE_COMPLETED,parameters);
+	public Integer deleteTodo(Integer id){
+		if( id == -1){
+			Map<String, ?> parameters = Collections.singletonMap("completed", 1);
+			return jdbc.update(TodoSqls.DELETE_COMPLETED,parameters);
+		}else{
+			Map<String, ?> parameters = Collections.singletonMap("id", id);
+			return jdbc.update(TodoSqls.DELETE_BY_ID, parameters);
+		}
 	}
 }

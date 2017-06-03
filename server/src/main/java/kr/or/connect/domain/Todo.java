@@ -1,21 +1,17 @@
 package kr.or.connect.domain;
 
+import java.util.Date;
+
 public class Todo {
 	private Integer id;
 	private String todo;
 	private Integer completed;
-	private String date;
+	private Date date;
 
 	public Todo(){
 	}
 	
-	public Todo( String todo, Integer completed, String date) {
-		this.todo = todo;
-		this.completed = completed;
-		this.date = date;
-	}
-	
-	public Todo(Integer id, String todo, Integer completed, String date) {
+	public Todo(Integer id, String todo, Integer completed, Date date) {
 		this.id = id;
 		this.todo = todo;
 		this.completed = completed;
@@ -44,10 +40,10 @@ public class Todo {
 	public void setCompleted(Integer completed) {
 		this.completed = completed;
 	}
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 }
